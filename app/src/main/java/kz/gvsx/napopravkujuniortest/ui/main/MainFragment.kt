@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.MainFragmentBinding
+import kz.gvsx.napopravkujuniortest.launchAndRepeatWithViewLifecycle
 import kz.gvsx.napopravkujuniortest.px
 
 @AndroidEntryPoint
@@ -34,7 +36,9 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             addItemDecoration(divider)
         }
 
-        viewModel.repositories.observe(viewLifecycleOwner, adapter::submitList)
+        launchAndRepeatWithViewLifecycle {
+            viewModel.repositoriesPagingFlow.collect(adapter::submitData)
+        }
     }
 
     companion object {

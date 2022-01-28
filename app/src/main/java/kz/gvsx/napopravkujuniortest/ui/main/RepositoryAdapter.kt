@@ -3,16 +3,17 @@ package kz.gvsx.napopravkujuniortest.ui.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import coil.clear
 import coil.load
 import coil.transform.CircleCropTransformation
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.RepositoryItemBinding
 import kz.gvsx.napopravkujuniortest.domain.Repository
 
-class RepositoryAdapter : ListAdapter<Repository, RepositoryAdapter.ViewHolder>(DiffUtil()) {
+class RepositoryAdapter : PagingDataAdapter<Repository, RepositoryAdapter.ViewHolder>(DiffUtil()) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val viewBinding: RepositoryItemBinding by viewBinding()
@@ -24,6 +25,11 @@ class RepositoryAdapter : ListAdapter<Repository, RepositoryAdapter.ViewHolder>(
             }
             fullNameTextView.text = repository.fullName
             loginTextView.text = repository.owner.login
+
+        fun clear() = with(viewBinding) {
+            avatarImageView.clear()
+            fullNameTextView.text = ""
+            loginTextView.text = ""
         }
     }
 
@@ -45,6 +51,11 @@ class RepositoryAdapter : ListAdapter<Repository, RepositoryAdapter.ViewHolder>(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.onBind(getItem(position))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val repository = getItem(position)
+        if (repository != null)
+            holder.onBind(repository)
+        else
+            holder.clear()
+    }
 }
