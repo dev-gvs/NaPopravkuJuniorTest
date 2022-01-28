@@ -1,9 +1,10 @@
 package kz.gvsx.napopravkujuniortest
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kz.gvsx.napopravkujuniortest.ui.main.MainFragment
+import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

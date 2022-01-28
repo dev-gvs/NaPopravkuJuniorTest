@@ -3,20 +3,21 @@ package kz.gvsx.napopravkujuniortest.ui.main
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.MainFragmentBinding
 
+@AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
 
     private val viewBinding: MainFragmentBinding by viewBinding()
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        viewBinding.message.text = "Main Fragment Text"
+        viewBinding.message.text = viewModel.messageText
     }
 
     companion object {
