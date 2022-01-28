@@ -26,10 +26,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/idTextView"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView"
         app:layout_constraintTop_toTopOf="@+id/avatarImageView"
         tools:text="mojombo" />
@@ -42,15 +41,24 @@
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
-        app:layout_constraintEnd_toEndOf="@+id/loginTextView"
+        app:layout_constraintEnd_toEndOf="@+id/idTextView"
         app:layout_constraintStart_toStartOf="@+id/loginTextView"
         app:layout_constraintTop_toBottomOf="@+id/loginTextView"
         tools:text="mojombo/grit" />
 
-    <androidx.constraintlayout.helper.widget.Layer
+    <TextView
         android:id="@+id/idTextView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        tools:ignore="MissingConstraints" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="textEnd"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.637"
+        app:layout_constraintStart_toEndOf="@+id/loginTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="369" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

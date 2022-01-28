@@ -25,6 +25,9 @@ class RepositoryAdapter : PagingDataAdapter<Repository, RepositoryAdapter.ViewHo
             }
             fullNameTextView.text = repository.fullName
             loginTextView.text = repository.owner.login
+            if (kz.gvsx.napopravkujuniortest.BuildConfig.DEBUG)
+                idTextView.text = repository.id.toString()
+        }
 
         fun clear() = with(viewBinding) {
             avatarImageView.clear()
