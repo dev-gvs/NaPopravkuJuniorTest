@@ -13,10 +13,18 @@ import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.RepositoryItemBinding
 import kz.gvsx.napopravkujuniortest.domain.Repository
 
-class RepositoryAdapter : PagingDataAdapter<Repository, RepositoryAdapter.ViewHolder>(DiffUtil()) {
+class RepositoryAdapter(private val clickListener: (Repository) -> Unit) :
+    PagingDataAdapter<Repository, RepositoryAdapter.ViewHolder>(DiffUtil()) {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View, clickAtPosition: (Int) -> Unit) : RecyclerView.ViewHolder(view) {
         private val viewBinding: RepositoryItemBinding by viewBinding()
+
+        init {
+            viewBinding.itemContainer.setOnClickListener {
+                val adapterPos = bindingAdapterPosition
+                if (adapterPos != RecyclerView.NO_POSITION) clickAtPosition(adapterPos)
+            }
+        }
 
         fun onBind(repository: Repository) = with(viewBinding) {
             avatarImageView.load(repository.owner.avatarUrl) {
@@ -51,7 +59,11 @@ class RepositoryAdapter : PagingDataAdapter<Repository, RepositoryAdapter.ViewHo
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.repository_item, parent, false)
 
-        return ViewHolder(view)
+        return ViewHolder(view) { position ->
+            getItem(position)?.let { repository ->
+                clickListener(repository)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

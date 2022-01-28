@@ -1,7 +1,6 @@
 package kz.gvsx.napopravkujuniortest.ui.main
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
