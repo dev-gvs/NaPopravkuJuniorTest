@@ -50,6 +50,7 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
                         transformations(CircleCropTransformation())
                     }
                     fullNameTextView.text = repository.fullName
+                    fullNameTextView.isSelected = true
                     loginTextView.text = repository.owner.login
                     if (kz.gvsx.napopravkujuniortest.BuildConfig.DEBUG)
                         idTextView.text = repository.id.toString()
