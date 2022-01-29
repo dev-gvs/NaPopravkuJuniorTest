@@ -35,6 +35,9 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     ): View {
         viewBinding.recyclerView.apply {
             adapter = this@MainFragment.adapter
+            // Because this Recycler View has match_parent width and height,
+            // for optimization purposes it's better to setHasFixedSize to true.
+            setHasFixedSize(true)
             val divider = MaterialDividerItemDecoration(
                 this.context, LinearLayoutManager.VERTICAL
             ).apply {
