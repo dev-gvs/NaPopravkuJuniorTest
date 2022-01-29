@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.collect
 import kz.gvsx.napopravkujuniortest.MainActivity
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.MainFragmentBinding
+import kz.gvsx.napopravkujuniortest.domain.Repository
 import kz.gvsx.napopravkujuniortest.launchAndRepeatWithViewLifecycle
 import kz.gvsx.napopravkujuniortest.px
 import kz.gvsx.napopravkujuniortest.ui.details.DetailsFragment
@@ -23,8 +24,7 @@ import kz.gvsx.napopravkujuniortest.ui.details.DetailsFragment
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
 
-    private val adapter: RepositoryAdapter =
-        RepositoryAdapter { navigateToRepositoryDetails(it.id) }
+    private val adapter: RepositoryAdapter = RepositoryAdapter(::navigateToRepositoryDetails)
     private val viewBinding: MainFragmentBinding by viewBinding(CreateMethod.INFLATE)
     private val viewModel: MainViewModel by viewModels()
 
@@ -60,8 +60,12 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         super.onDestroyView()
     }
 
-    private fun navigateToRepositoryDetails(id: Int) = parentFragmentManager.commit {
-        replace(R.id.fragmentContainer, DetailsFragment.newInstance(id), DetailsFragment.TAG)
+    private fun navigateToRepositoryDetails(repository: Repository) = parentFragmentManager.commit {
+        replace(
+            R.id.fragmentContainer,
+            DetailsFragment.newInstance(repository),
+            DetailsFragment.TAG
+        )
         setReorderingAllowed(true)
         addToBackStack(DetailsFragment.TAG)
         (activity as MainActivity).enableToolbarNavigationIcon()

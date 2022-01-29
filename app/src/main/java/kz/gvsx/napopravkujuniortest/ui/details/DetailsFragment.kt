@@ -8,6 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.DetailsFragmentBinding
+import kz.gvsx.napopravkujuniortest.domain.Repository
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.details_fragment) {
@@ -18,16 +19,18 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.textView.text = viewModel.id.toString()
+        viewModel.selectedRepository?.let { repository ->
+            viewBinding.textView.text = repository.fullName
+        }
     }
 
     companion object {
         const val TAG = "DETAILS_FRAGMENT"
-        const val REPOSITORY_ID_KEY = "KEY_REPOSITORY_ID"
+        const val REPOSITORY_KEY = "KEY_REPOSITORY"
 
-        fun newInstance(id: Int) = DetailsFragment().apply {
+        fun newInstance(repository: Repository) = DetailsFragment().apply {
             arguments = Bundle().apply {
-                putInt(REPOSITORY_ID_KEY, id)
+                putParcelable(REPOSITORY_KEY, repository)
             }
         }
     }

@@ -7,7 +7,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    val id = savedStateHandle.get<Int>(DetailsFragment.REPOSITORY_ID_KEY)
+    val selectedRepository = savedStateHandle.get<Repository>(DetailsFragment.REPOSITORY_KEY)
+
 }
