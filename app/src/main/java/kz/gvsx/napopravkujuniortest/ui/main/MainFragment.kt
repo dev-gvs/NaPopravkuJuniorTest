@@ -71,8 +71,4 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         addToBackStack(DetailsFragment.TAG)
         (activity as MainActivity).enableToolbarNavigationIcon()
     }
-
-    companion object {
-        fun newInstance() = MainFragment()
-    }
 }
