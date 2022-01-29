@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_container"
+    android:id="@+id/repository"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
@@ -61,5 +61,4 @@
         app:layout_constraintStart_toEndOf="@+id/loginTextView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="369" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
