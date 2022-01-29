@@ -10,10 +10,15 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
 
     private val viewBinding: MainActivityBinding by viewBinding()
 
-    fun enableToolbarNavigationIcon() {
-        viewBinding.topAppBar.setNavigationIcon(R.drawable.ic_back)
-        viewBinding.topAppBar.setNavigationOnClickListener {
-            viewBinding.topAppBar.navigationIcon = null
+    override fun onBackPressed() {
+        viewBinding.topAppBar.navigationIcon = null
+        super.onBackPressed()
+    }
+
+    fun enableToolbarNavigationIcon() = with(viewBinding.topAppBar) {
+        setNavigationIcon(R.drawable.ic_back)
+        setNavigationOnClickListener {
+            navigationIcon = null
             supportFragmentManager.popBackStack()
         }
     }
