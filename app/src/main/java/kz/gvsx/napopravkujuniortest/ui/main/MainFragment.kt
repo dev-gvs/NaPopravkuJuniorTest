@@ -1,7 +1,6 @@
 package kz.gvsx.napopravkujuniortest.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,8 @@ import kz.gvsx.napopravkujuniortest.ui.details.DetailsFragment
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
 
-    private val adapter: RepositoryAdapter = RepositoryAdapter { navigateToRepositoryDetails(it.id) }
+    private val adapter: RepositoryAdapter =
+        RepositoryAdapter { navigateToRepositoryDetails(it.id) }
     private val viewBinding: MainFragmentBinding by viewBinding(CreateMethod.INFLATE)
     private val viewModel: MainViewModel by viewModels()
 

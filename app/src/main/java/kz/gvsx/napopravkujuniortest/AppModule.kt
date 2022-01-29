@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kz.gvsx.napopravkujuniortest.data.GitHubService
 import okhttp3.MediaType
 import retrofit2.Retrofit
