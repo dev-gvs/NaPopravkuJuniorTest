@@ -4,10 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kz.gvsx.napopravkujuniortest.data.GitHubService
+import kz.gvsx.napopravkujuniortest.domain.Commit
 import kz.gvsx.napopravkujuniortest.domain.Repository
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,14 +16,25 @@ class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     gitHubService: GitHubService
 ) : ViewModel() {
-    val selectedRepository = savedStateHandle.get<Repository>(DetailsFragment.REPOSITORY_KEY)
+    private val _selectedRepository =
+        MutableStateFlow(savedStateHandle.get<Repository>(DetailsFragment.REPOSITORY_KEY))
+    val selectedRepository = _selectedRepository.asStateFlow()
+
+    private val _selectedRepositoryLastCommit = MutableStateFlow<Commit?>(null)
+    val selectedRepositoryLastCommit = _selectedRepositoryLastCommit.asStateFlow()
 
     init {
-        selectedRepository?.let { repository ->
-            viewModelScope.launch {
-                val commits = gitHubService.listRepositoryCommits(repository.fullName)
-                Timber.d(commits.first().toString())
+        selectedRepository
+            .filterNotNull()
+            .flatMapLatest { repo ->
+                flow {
+                    val commits = gitHubService.listRepositoryCommits(repo.fullName)
+                    emit(commits.first())
+                }
             }
-        }
+            .onEach { commit ->
+                _selectedRepositoryLastCommit.update { commit }
+            }
+            .launchIn(viewModelScope)
     }
 }
