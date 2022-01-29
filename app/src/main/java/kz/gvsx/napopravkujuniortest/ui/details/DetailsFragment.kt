@@ -34,7 +34,10 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding.commits.parentHashes.adapter = adapter
+        viewBinding.apply {
+            repository.root.isClickable = false
+            commits.parentHashes.adapter = adapter
+        }
 
         return viewBinding.root
     }
