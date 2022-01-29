@@ -1,15 +1,20 @@
 package kz.gvsx.napopravkujuniortest.ui.main
 
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kz.gvsx.napopravkujuniortest.MainActivity
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.MainFragmentBinding
 import kz.gvsx.napopravkujuniortest.launchAndRepeatWithViewLifecycle
@@ -19,20 +24,19 @@ import kz.gvsx.napopravkujuniortest.ui.details.DetailsFragment
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
 
-    private val adapter get() = viewBinding.recyclerView.adapter as RepositoryAdapter
-    private val viewBinding: MainFragmentBinding by viewBinding()
+    private val adapter: RepositoryAdapter = RepositoryAdapter { navigateToRepositoryDetails(it.id) }
+    private val viewBinding: MainFragmentBinding by viewBinding(CreateMethod.INFLATE)
     private val viewModel: MainViewModel by viewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        with(viewBinding.recyclerView) {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = RepositoryAdapter { repository ->
-                navigateToRepositoryDetails(repository.id)
-            }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        viewBinding.recyclerView.apply {
+            adapter = this@MainFragment.adapter
             val divider = MaterialDividerItemDecoration(
-                context, LinearLayoutManager.VERTICAL
+                this.context, LinearLayoutManager.VERTICAL
             ).apply {
                 dividerInsetStart = 16.px
                 dividerInsetEnd = 16.px
@@ -40,15 +44,27 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             addItemDecoration(divider)
         }
 
+        return viewBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         launchAndRepeatWithViewLifecycle {
             viewModel.repositoriesPagingFlow.collect(adapter::submitData)
         }
     }
 
+    override fun onDestroyView() {
+        viewBinding.recyclerView.adapter = null
+        super.onDestroyView()
+    }
+
     private fun navigateToRepositoryDetails(id: Int) = parentFragmentManager.commit {
-        replace(R.id.container, DetailsFragment.newInstance(id), DetailsFragment.TAG)
+        replace(R.id.fragmentContainer, DetailsFragment.newInstance(id), DetailsFragment.TAG)
         setReorderingAllowed(true)
         addToBackStack(DetailsFragment.TAG)
+        (activity as MainActivity).enableToolbarNavigationIcon()
     }
 
     companion object {

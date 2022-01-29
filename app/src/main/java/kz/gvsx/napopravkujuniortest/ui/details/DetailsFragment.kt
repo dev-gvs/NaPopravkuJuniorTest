@@ -27,7 +27,6 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
         const val REPOSITORY_ID_KEY = "KEY_REPOSITORY_ID"
 
         fun newInstance(id: Int) = DetailsFragment().apply {
-            Log.d("newInstance", id.toString())
             arguments = Bundle().apply {
                 putInt(REPOSITORY_ID_KEY, id)
             }

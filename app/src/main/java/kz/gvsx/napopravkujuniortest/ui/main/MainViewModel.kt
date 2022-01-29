@@ -1,5 +1,6 @@
 package kz.gvsx.napopravkujuniortest.ui.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -15,7 +16,7 @@ class MainViewModel @Inject constructor(
     gitHubService: GitHubService
 ) : ViewModel() {
     val repositoriesPagingFlow = Pager(
-        PagingConfig(pageSize = 20)
+        PagingConfig(pageSize = 20, enablePlaceholders = false)
     ) { RepositoriesPagingSource(gitHubService) }
         .flow
         .cachedIn(viewModelScope)
