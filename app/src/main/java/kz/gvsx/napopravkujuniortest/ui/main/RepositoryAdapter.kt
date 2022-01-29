@@ -20,7 +20,7 @@ class RepositoryAdapter(private val clickListener: (Repository) -> Unit) :
         private val viewBinding: RepositoryItemBinding by viewBinding()
 
         init {
-            viewBinding.itemContainer.setOnClickListener {
+            viewBinding.repository.setOnClickListener {
                 val adapterPos = bindingAdapterPosition
                 if (adapterPos != RecyclerView.NO_POSITION) clickAtPosition(adapterPos)
             }
