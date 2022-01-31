@@ -64,14 +64,13 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     private fun navigateToRepositoryDetails(repository: Repository) = parentFragmentManager.commit {
+        setReorderingAllowed(true)
         setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         replace(
             R.id.fragmentContainer,
             DetailsFragment.newInstance(repository),
             DetailsFragment.TAG
         )
-        setReorderingAllowed(true)
         addToBackStack(DetailsFragment.TAG)
-        (activity as MainActivity).enableToolbarNavigationIcon()
     }
 }
