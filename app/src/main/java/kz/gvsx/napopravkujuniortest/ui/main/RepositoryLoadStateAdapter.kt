@@ -9,7 +9,7 @@ import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kz.gvsx.napopravkujuniortest.R
-import kz.gvsx.napopravkujuniortest.databinding.RepositoryLoadStateItemBinding
+import kz.gvsx.napopravkujuniortest.databinding.LoadStateItemBinding
 import timber.log.Timber
 
 class RepositoryLoadStateAdapter(
@@ -17,10 +17,9 @@ class RepositoryLoadStateAdapter(
 ) : LoadStateAdapter<RepositoryLoadStateAdapter.LoadStateViewHolder>() {
 
     class LoadStateViewHolder(view: View, onRetry: () -> Unit) : RecyclerView.ViewHolder(view) {
-        private val viewBinding: RepositoryLoadStateItemBinding by viewBinding()
+        private val viewBinding: LoadStateItemBinding by viewBinding()
 
         init {
-            Timber.d("init")
             viewBinding.retryButton.setOnClickListener { onRetry() }
         }
 
@@ -38,7 +37,7 @@ class RepositoryLoadStateAdapter(
         loadState: LoadState
     ): LoadStateViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.repository_load_state_item, parent, false)
+            .inflate(R.layout.load_state_item, parent, false)
 
         return LoadStateViewHolder(view, onRetry)
     }
