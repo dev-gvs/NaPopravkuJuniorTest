@@ -13,18 +13,22 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kz.gvsx.napopravkujuniortest.MainActivity
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.MainFragmentBinding
 import kz.gvsx.napopravkujuniortest.domain.Repository
 import kz.gvsx.napopravkujuniortest.launchAndRepeatWithViewLifecycle
 import kz.gvsx.napopravkujuniortest.px
 import kz.gvsx.napopravkujuniortest.ui.details.DetailsFragment
+import kz.gvsx.napopravkujuniortest.withHeaderAndFooter
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
 
-    private val adapter: RepositoryAdapter = RepositoryAdapter(::navigateToRepositoryDetails)
+    private val adapter = RepositoryAdapter(onClick = ::navigateToRepositoryDetails)
+    private val adapterWithHeaderAndFooter = adapter.withHeaderAndFooter(
+        header = RepositoryLoadStateAdapter(onRetry = adapter::retry),
+        footer = RepositoryLoadStateAdapter(onRetry = adapter::retry),
+    )
     private val viewBinding: MainFragmentBinding by viewBinding(CreateMethod.INFLATE)
     private val viewModel: MainViewModel by viewModels()
 
@@ -34,7 +38,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         savedInstanceState: Bundle?
     ): View {
         viewBinding.recyclerView.apply {
-            adapter = this@MainFragment.adapter
+            adapter = adapterWithHeaderAndFooter
             // Because this Recycler View has match_parent width and height,
             // for optimization purposes it's better to setHasFixedSize to true.
             setHasFixedSize(true)
