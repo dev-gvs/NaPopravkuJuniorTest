@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Тестовое Задание от НаПоправку</string>
+    <string name="no_connection">Нет соединения</string>
+    <string name="retry">Повторить</string>
 </resources>
