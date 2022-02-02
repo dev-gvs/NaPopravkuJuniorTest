@@ -20,6 +20,7 @@ class RepositoriesPagingSource(
                 nextKey = response.last().id
             )
         } catch (t: Throwable) {
+            Timber.e(t)
             LoadResult.Error(t)
         }
     }
