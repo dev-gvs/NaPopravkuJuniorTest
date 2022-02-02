@@ -13,7 +13,7 @@ import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.RepositoryItemBinding
 import kz.gvsx.napopravkujuniortest.domain.Repository
 
-class RepositoryAdapter(private val clickListener: (Repository) -> Unit) :
+class RepositoryAdapter(private val onClick: (Repository) -> Unit) :
     PagingDataAdapter<Repository, RepositoryAdapter.ViewHolder>(DiffUtil()) {
 
     class ViewHolder(view: View, clickAtPosition: (Int) -> Unit) : RecyclerView.ViewHolder(view) {
@@ -61,7 +61,7 @@ class RepositoryAdapter(private val clickListener: (Repository) -> Unit) :
 
         return ViewHolder(view) { position ->
             getItem(position)?.let { repository ->
-                clickListener(repository)
+                onClick(repository)
             }
         }
     }
