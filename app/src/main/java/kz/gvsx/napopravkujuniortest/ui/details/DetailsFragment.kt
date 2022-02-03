@@ -13,19 +13,20 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterNotNull
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.DetailsFragmentBinding
+import kz.gvsx.napopravkujuniortest.domain.Commit
 import kz.gvsx.napopravkujuniortest.domain.Repository
 import kz.gvsx.napopravkujuniortest.launchAndRepeatWithViewLifecycle
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+
 @AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.details_fragment) {
 
-    private val adapter = ParentCommitsAdapter()
+    private val adapter get() = viewBinding.lastCommit.parentHashes.adapter as ParentCommitsAdapter
     private val viewBinding: DetailsFragmentBinding by viewBinding(CreateMethod.INFLATE)
     private val viewModel: DetailsViewModel by viewModels()
 
@@ -34,9 +35,12 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding.apply {
+        with(viewBinding) {
             repository.root.isClickable = false
-            commits.parentHashes.adapter = adapter
+            loadState.retryButton.setOnClickListener {
+                viewModel.fetchLastCommit()
+            }
+            lastCommit.parentHashes.adapter = ParentCommitsAdapter()
         }
 
         return viewBinding.root
@@ -45,40 +49,55 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchAndRepeatWithViewLifecycle {
-            viewModel.selectedRepository.filterNotNull().collectLatest { repository ->
-                viewBinding.repository.apply {
-                    avatarImageView.load(repository.owner.avatarUrl) {
-                        crossfade(true)
-                        transformations(CircleCropTransformation())
-                    }
-                    fullNameTextView.text = repository.fullName
-                    fullNameTextView.isSelected = true
-                    loginTextView.text = repository.owner.login
-                    if (kz.gvsx.napopravkujuniortest.BuildConfig.DEBUG)
-                        idTextView.text = repository.id.toString()
+        viewModel.selectedRepository.let { repository ->
+            with(viewBinding.repository) {
+                avatarImageView.load(repository.owner.avatarUrl) {
+                    crossfade(true)
+                    transformations(CircleCropTransformation())
+                }
+                fullNameTextView.text = repository.fullName
+                fullNameTextView.isSelected = true
+                loginTextView.text = repository.owner.login
+                if (kz.gvsx.napopravkujuniortest.BuildConfig.DEBUG) {
+                    idTextView.text = repository.id.toString()
                 }
             }
         }
 
         launchAndRepeatWithViewLifecycle {
-            viewModel.selectedRepositoryLastCommit.filterNotNull().collectLatest { commit ->
-                viewBinding.commits.apply {
-                    authorTextView.text = commit.authorName
-                    dateTextView.text = dateFormatter.format(Instant.parse(commit.date))
-                    messageTextView.text = commit.message
+            viewModel.uiState.collectLatest { uiState ->
+                if (uiState.lastCommit != null) {
+                    viewBinding.loadState.root.isVisible = false
+                    setLastCommit(uiState.lastCommit)
+                } else {
+                    viewBinding.lastCommit.root.isVisible = false
+                    setLoadState(uiState)
                 }
-                if (commit.parentHashes.isEmpty())
-                    viewBinding.commits.apply {
-                        divider.visibility = View.INVISIBLE
-                        parentHashes.isVisible = false
-                    }
-                else
-                    adapter.submitList(commit.parentHashes)
-
-                viewBinding.commits.root.isVisible = true
             }
         }
+    }
+
+    private fun setLastCommit(commit: Commit) = with(viewBinding.lastCommit) {
+        authorTextView.text = commit.authorName
+        dateTextView.text = dateFormatter.format(Instant.parse(commit.date))
+        messageTextView.text = commit.message
+
+
+        if (commit.parentHashes.isEmpty()) {
+            divider.visibility = View.INVISIBLE
+            parentHashes.isVisible = false
+        } else
+            adapter.submitList(commit.parentHashes)
+
+        root.isVisible = true
+    }
+
+    private fun setLoadState(state: DetailsUiState) = with(viewBinding.loadState) {
+        progressIndicator.isVisible = state.isFetchingLastCommit
+        retryButton.isVisible = state.hasErrors
+        errorTextView.isVisible = state.hasErrors
+
+        root.isVisible = true
     }
 
     companion object {
