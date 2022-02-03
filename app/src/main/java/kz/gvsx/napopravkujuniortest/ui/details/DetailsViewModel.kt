@@ -4,37 +4,54 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kz.gvsx.napopravkujuniortest.data.GitHubService
-import kz.gvsx.napopravkujuniortest.domain.Commit
 import kz.gvsx.napopravkujuniortest.domain.Repository
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    gitHubService: GitHubService
+    private val gitHubService: GitHubService
 ) : ViewModel() {
-    private val _selectedRepository =
-        MutableStateFlow(savedStateHandle.get<Repository>(DetailsFragment.REPOSITORY_KEY))
-    val selectedRepository = _selectedRepository.asStateFlow()
 
-    private val _selectedRepositoryLastCommit = MutableStateFlow<Commit?>(null)
-    val selectedRepositoryLastCommit = _selectedRepositoryLastCommit.asStateFlow()
+    val selectedRepository =
+        requireNotNull(savedStateHandle.get<Repository>(DetailsFragment.REPOSITORY_KEY)) {
+            "repository shouldn't be null"
+        }
+
+    private val _uiState = MutableStateFlow(
+        DetailsUiState(
+            repository = selectedRepository,
+            lastCommit = null,
+            isFetchingLastCommit = true
+        )
+    )
+    val uiState = _uiState.asStateFlow()
 
     init {
-        selectedRepository
-            .filterNotNull()
-            .flatMapLatest { repo ->
-                flow {
-                    val commits = gitHubService.listRepositoryCommits(repo.fullName)
-                    emit(commits.first())
+        fetchLastCommit()
+    }
+
+    fun fetchLastCommit() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isFetchingLastCommit = true, hasErrors = false) }
+
+            try {
+                val commits = gitHubService.listRepositoryCommits(selectedRepository.fullName)
+                val lastCommit = commits.first()
+                _uiState.update {
+                    it.copy(lastCommit = lastCommit)
+                }
+            } catch (ioe: IOException) {
+                _uiState.update {
+                    it.copy(isFetchingLastCommit = false, hasErrors = true)
                 }
             }
-            .onEach { commit ->
-                _selectedRepositoryLastCommit.update { commit }
-            }
-            .launchIn(viewModelScope)
+        }
     }
 }
