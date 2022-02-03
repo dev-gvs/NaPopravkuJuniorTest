@@ -14,6 +14,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (savedInstanceState != null && supportFragmentManager.backStackEntryCount != 0)
+            viewBinding.topAppBar.setNavigationIcon(R.drawable.ic_back)
+
         viewBinding.topAppBar.setNavigationOnClickListener {
             supportFragmentManager.popBackStack()
         }
