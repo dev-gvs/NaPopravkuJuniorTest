@@ -42,8 +42,11 @@ class DetailsViewModel @Inject constructor(
             _uiState.update { it.copy(isFetchingLastCommit = true, hasErrors = false) }
 
             try {
+                // In more complex application this logic should be in the Repository or a UseCase.
                 val commits = gitHubService.listRepositoryCommits(selectedRepository.fullName)
+                // First list element is the last commit of the repository.
                 val lastCommit = commits.first()
+
                 _uiState.update {
                     it.copy(lastCommit = lastCommit)
                 }

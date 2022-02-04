@@ -12,12 +12,15 @@ class RepositoriesPagingSource(
         return try {
             val since = params.key ?: 0
             Timber.d("load repositories since $since id")
+
             val response = service.listPublicRepositories(since)
+            // Last item id in the returned response is going to be the next offset.
+            val nextKey = response.last().id
 
             LoadResult.Page(
                 data = response,
                 prevKey = null,
-                nextKey = response.last().id
+                nextKey = nextKey
             )
         } catch (t: Throwable) {
             Timber.e(t)

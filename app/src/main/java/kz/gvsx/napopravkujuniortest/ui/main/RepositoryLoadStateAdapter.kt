@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.LoadStateItemBinding
-import timber.log.Timber
 
 class RepositoryLoadStateAdapter(
     private val onRetry: () -> Unit
@@ -24,8 +23,6 @@ class RepositoryLoadStateAdapter(
         }
 
         fun onBind(loadState: LoadState) = with(viewBinding) {
-            Timber.d("$loadState")
-
             progressIndicator.isVisible = loadState is LoadState.Loading
             retryButton.isVisible = loadState is LoadState.Error
             errorTextView.isVisible = loadState is LoadState.Error

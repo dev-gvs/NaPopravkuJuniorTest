@@ -37,13 +37,13 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding.recyclerView.apply {
+        with(viewBinding.recyclerView) {
             adapter = adapterWithHeaderAndFooter
             // Because this Recycler View has match_parent width and height,
             // for optimization purposes it's better to setHasFixedSize to true.
             setHasFixedSize(true)
             val divider = MaterialDividerItemDecoration(
-                this.context, LinearLayoutManager.VERTICAL
+                context, LinearLayoutManager.VERTICAL
             ).apply {
                 dividerInsetStart = 16.px
                 dividerInsetEnd = 16.px
@@ -63,6 +63,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     override fun onDestroyView() {
+        // Prevents memory leak.
         viewBinding.recyclerView.adapter = null
         super.onDestroyView()
     }

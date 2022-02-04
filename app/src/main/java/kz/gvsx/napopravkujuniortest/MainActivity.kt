@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Set navigation icon on the configuration change and when navigated somewhere.
         if (savedInstanceState != null && supportFragmentManager.backStackEntryCount != 0)
             viewBinding.topAppBar.setNavigationIcon(R.drawable.ic_back)
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
             supportFragmentManager.popBackStack()
         }
 
+        // Change navigation icon based on the back stack entry count.
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount != 0)
                 viewBinding.topAppBar.setNavigationIcon(R.drawable.ic_back)

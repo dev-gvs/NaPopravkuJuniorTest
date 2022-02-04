@@ -9,6 +9,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import coil.clear
 import coil.load
 import coil.transform.CircleCropTransformation
+import kz.gvsx.napopravkujuniortest.BuildConfig
 import kz.gvsx.napopravkujuniortest.R
 import kz.gvsx.napopravkujuniortest.databinding.RepositoryItemBinding
 import kz.gvsx.napopravkujuniortest.domain.Repository
@@ -33,7 +34,7 @@ class RepositoryAdapter(private val onClick: (Repository) -> Unit) :
             }
             fullNameTextView.text = repository.fullName
             loginTextView.text = repository.owner.login
-            if (kz.gvsx.napopravkujuniortest.BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG)
                 idTextView.text = repository.id.toString()
         }
 
@@ -41,6 +42,8 @@ class RepositoryAdapter(private val onClick: (Repository) -> Unit) :
             avatarImageView.clear()
             fullNameTextView.text = ""
             loginTextView.text = ""
+            if (BuildConfig.DEBUG)
+                idTextView.text = ""
         }
     }
 
