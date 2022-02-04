@@ -38,6 +38,7 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
         with(viewBinding) {
             repository.root.isClickable = false
             loadState.retryButton.setOnClickListener {
+                loadAvatar()
                 viewModel.fetchLastCommit()
             }
             lastCommit.parentHashes.adapter = ParentCommitsAdapter()
@@ -51,10 +52,7 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
 
         viewModel.selectedRepository.let { repository ->
             with(viewBinding.repository) {
-                avatarImageView.load(repository.owner.avatarUrl) {
-                    crossfade(true)
-                    transformations(CircleCropTransformation())
-                }
+                loadAvatar()
                 fullNameTextView.text = repository.fullName
                 fullNameTextView.isSelected = true
                 loginTextView.text = repository.owner.login
@@ -74,6 +72,13 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
                     setLoadState(uiState)
                 }
             }
+        }
+    }
+
+    private fun loadAvatar() = with(viewBinding.repository.avatarImageView) {
+        load(viewModel.selectedRepository.owner.avatarUrl) {
+            crossfade(true)
+            transformations(CircleCropTransformation())
         }
     }
 
