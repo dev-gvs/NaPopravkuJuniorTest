@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kz.gvsx.napopravkujuniortest.data.GitHubService
 import kz.gvsx.napopravkujuniortest.domain.Repository
-import java.io.IOException
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,7 +50,9 @@ class DetailsViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(lastCommit = lastCommit)
                 }
-            } catch (ioe: IOException) {
+            } catch (t: Throwable) {
+                Timber.e(t)
+
                 _uiState.update {
                     it.copy(isFetchingLastCommit = false, hasErrors = true)
                 }
